@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/timesheets.css' %}">
+{% endblock %}
+
+{% block main-heading %}
+    Bảng chấm công
+{% endblock %}
+
+{% block main %}
+    <table class="table table-hover mt-5">
+        <thead>
+        <tr>
+            <th scope="col">Ngày</th>
+            <th scope="col">Mã nhân viên</th>
+            <th scope="col">Tên nhân viên</th>
+            <th scope="col">Giờ vào ca</th>
+            <th scope="col">Giờ ra ca</th>
+            <th scope="col">Tổng giờ làm việc</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for date, values in list_time_stamp.items %}
+            <tr>
+                <td>{{ date }}</td>
+                {% for value in values %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}

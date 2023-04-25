@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/personnel.css' %}">
+{% endblock %}
+
+{% block main-heading %}
+    Danh sách nhân viên
+{% endblock %}
+
+{% block main %}
+    <table class="table table-hover mt-5">
+        <thead>
+        <tr>
+            <th scope="col">Mã nhân viên</th>
+            <th scope="col">Tên nhân viên</th>
+            <th scope="col">Email</th>
+            <th scope="col">Số điện thoại</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for p in personnel %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.email }}</td>
+                <td>{{ p.phone_number }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
