@@ -23,18 +23,18 @@ def check_in(request):
 
     def save_check_in(id):
         if id not in checked_in:
-            cur_personnel = personnel_model.objects.get(id=id)
-            name = cur_personnel.name
-            new_check_in = Check_In(personnel_id=id, personnel_name=name)
+            cur_user = user_model.objects.get(id=id)
+            name = cur_user.name
+            new_check_in = Check_In(user_id=id, user_name=name)
             new_check_in.save()
             checked_in.append(id)
 
-    personnel_model = apps.get_model('personnel.Personnel')
-    personnel = personnel_model.objects.all()
+    user_model = apps.get_model('user.User')
+    user = user_model.objects.all()
     id_list = []
     image_list = []
 
-    for p in personnel:
+    for p in user:
         img = cv2.imread(f'./media/{p.image}')
         image_list.append(img)
         id_list.append(p.id)

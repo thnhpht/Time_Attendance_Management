@@ -1,0 +1,38 @@
+.main form {
+    margin: 5% auto;
+    background: #ffffff;
+    width: 520px;
+    padding: 40px 62px;
+    border-radius: 20px;
+    box-shadow: 0 0 1px rgba(39, 103, 73, 0.3), 0 16px 24px rgba(39, 103, 73, 0.201) !important;
+}
+
+.main p {
+    font-size: 1.4rem;
+}
+
+.main a {
+    color: #4da16a;
+    text-decoration: none;
+}
+
+.main .label {
+    font-size: 1.2rem;
+}
+
+.main .input, .submit {
+    width: 100%;
+    height: 40px;
+    font-size: 1.4rem;
+}
+
+.main .submit {
+    background: #4da16a;
+    color: #fff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12);
+}
+
+.main a:hover, .submit:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block main-heading %}
+    Danh sách nhân viên
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar.html' %}
+{% endblock %}
+
+{% block main %}
+    <table class="table table-hover mt-5">
+        <thead>
+        <tr>
+            <th scope="col">Mã nhân viên</th>
+            <th scope="col">Tên nhân viên</th>
+            <th scope="col">Email</th>
+            <th scope="col">Số điện thoại</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>ITG-{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.tel }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

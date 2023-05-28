@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+{% include "header.html" %}
+<body>
+
+{# Wrapper #}
+<div class="wrapper d-flex p-2">
+
+    {% block sidebar %}{% endblock %}
+
+    {# Main #}
+    <div class="main">
+        {#        {% if request.session.message != None %}#}
+        {#            <div class="alert alert-{{ request.session.alert }} d-flex align-items-center alert-dismissible fade show" role="alert">#}
+        {#                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img">#}
+        {#                    <use xlink:href="{{ request.session.link }}"/>#}
+        {#                </svg>#}
+        {#                <div>#}
+        {#                    {{ request.session.message }}#}
+        {#                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#        {% endif %}#}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="messages alert alert-{{ message.tags }} d-flex align-items-center alert-dismissible fade show"
+                     role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img">
+                        {% if message.tags == 'success' %}
+                            <use xlink:href="#check-circle-fill"/>
+                        {% else %}
+                            <use xlink:href="#exclamation-triangle-fill"/>
+                        {% endif %}
+                    </svg>
+
+                    <div {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <h1 class="mt-5 text-center fw-bold">{% block main-heading %}{% endblock %}</h1>
+        {% block main %}{% endblock %}
+    </div>
+</div>
+
+{# Link Boostrap JS #}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous">
+</script>
+</body>
+</html>

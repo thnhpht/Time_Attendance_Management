@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block main-heading %}
+    Tạo tài khoản
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar.html' %}
+{% endblock %}
+
+{% block main %}
+    <form id="mainForm" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>Bạn đã có tài khoản? <a class="fw-bold" href="{% url 'sign-in' %}">Đăng nhập</a></p>
+
+        <div class="mb-5">
+            <label for="name" class="form-label fw-bold label">Họ và tên</label>
+            <input type="text" class="form-control input" id="name" name="name" required>
+        </div>
+        <div class="mb-5">
+            <label for="tel" class="form-label fw-bold label">Số điện thoại</label>
+            <input type="text" class="form-control input" id="tel" name="tel" pattern="\d*" required>
+        </div>
+        <div class="mb-5">
+            <label for="email" class="form-label fw-bold label">Email</label>
+            <input type="email" class="form-control input" id="email" name="email" aria-describedby="emailHelp" required>
+        </div>
+        <div class="mb-5">
+            <label for="password1" class="form-label fw-bold label">Mật khẩu</label>
+            <input type="password" class="form-control input" id="password1" name="password1" required>
+        </div>
+        <div class="mb-5">
+            <label for="password2" class="form-label fw-bold label">Xác nhận mật khẩu</label>
+            <input type="password" class="form-control input" id="password2" name="password2" required>
+        </div>
+        <div class="mb-5">
+            <label for="image" class="form-label fw-bold label">Hình ảnh</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn submit">Tạo tài khoản</button>
+    </form>
+{% endblock %}

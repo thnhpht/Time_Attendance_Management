@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block main-heading %}
+    Đăng nhập
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar.html' %}
+{% endblock %}
+
+{% block main %}
+    <form action="" method="POST">
+        {% csrf_token %}
+
+        <p>Bạn chưa có tài khoản? <a class="fw-bold" href="{% url 'sign-up' %}">Tạo tài khoản</a></p>
+
+        <div class="mb-5">
+            <label for="email" class="form-label fw-bold label">Email</label>
+            <input type="email" class="form-control input" id="email" name="email" aria-describedby="emailHelp"
+                   required>
+        </div>
+        <div class="mb-5">
+            <label for="password" class="form-label fw-bold label">Mật khẩu</label>
+            <input type="password" class="form-control input" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn submit">Đăng nhập</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,112 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: 'Roboto Slab', serif;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+h1 {
+    font-size: 3.6rem;
+}
+
+.wrapper {
+    min-height: 100vh;
+}
+
+.side {
+    position: relative;
+    width: 15%;
+    background: #4da16a;
+    border-radius: 8px;
+    box-shadow: 0 0 1px rgba(39, 103, 73, 0.5), 0 3px 8px rgba(39, 103, 73, 0.3) !important;
+}
+
+.side .nav-item {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0 8px;
+    padding: 16px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.side .nav-item p {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    margin-left: 28px;
+    font-size: 1.6rem;
+    color: #fff;
+}
+
+.side .nav-item:hover {
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.8s ease;
+}
+
+.side .nav-item:hover svg {
+    fill: #4da16a;
+}
+
+.side .nav-item:hover p {
+    color: #4da16a;
+}
+
+.main {
+    position: relative;
+    width: 85%;
+}
+
+.side .logout {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.main::before {
+    content: '';
+    background: url("../../../media/images/background/background.jpg") no-repeat center;
+    position: absolute;
+    background-size: 70%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    opacity: 0.4;
+}
+
+.main .alert {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    min-width: 20%;
+    font-size: 1.4rem;
+    font-weight: bold;
+    animation: hide-message 5s forwards;
+}
+
+@keyframes hide-message {
+    to {
+        visibility: hidden;
+    }
+}
+
+.main .btn-close {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
