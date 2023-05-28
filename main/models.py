@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
@@ -51,3 +53,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.name or self.email.split('@')[0]
 
+
+class Check_In(models.Model):
+    user_id = models.CharField(max_length=10)
+    user_name = models.CharField(max_length=255)
+    date = models.DateField(default=datetime.now)
+    time = models.TimeField(default=datetime.now)
+
+    def __str__(self):
+        return self.user_id + " " + self.user_name + " " + str(self.date) + " " + str(self.time)
+
+
+class Check_Out(models.Model):
+    user_id = models.CharField(max_length=10)
+    user_name = models.CharField(max_length=255)
+    date = models.DateField(default=datetime.now)
+    time = models.TimeField(default=datetime.now)
+
+    def __str__(self):
+        return self.user_id + " " + self.user_name + " " + str(self.date) + " " + str(self.time)

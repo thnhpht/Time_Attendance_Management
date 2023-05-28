@@ -10,17 +10,6 @@
 
     {# Main #}
     <div class="main">
-        {#        {% if request.session.message != None %}#}
-        {#            <div class="alert alert-{{ request.session.alert }} d-flex align-items-center alert-dismissible fade show" role="alert">#}
-        {#                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img">#}
-        {#                    <use xlink:href="{{ request.session.link }}"/>#}
-        {#                </svg>#}
-        {#                <div>#}
-        {#                    {{ request.session.message }}#}
-        {#                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>#}
-        {#                </div>#}
-        {#            </div>#}
-        {#        {% endif %}#}
         {% if messages %}
             {% for message in messages %}
                 <div class="messages alert alert-{{ message.tags }} d-flex align-items-center alert-dismissible fade show"
