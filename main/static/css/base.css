@@ -41,7 +41,7 @@ a {
     text-decoration: none;
 }
 
-.side .nav-item p {
+.side .nav-item span{
     position: absolute;
     top: 50%;
     transform: translate(0, -50%);
@@ -60,8 +60,14 @@ a {
     fill: #4da16a;
 }
 
-.side .nav-item:hover p {
+.side .nav-item:hover span {
     color: #4da16a;
+}
+
+.active {
+    background: #fff !important;
+    fill: #4da16a !important;
+    color: #4da16a !important;
 }
 
 .main {

@@ -71,7 +71,6 @@ def sign_out(request):
 
 def user(request):
     id = request.user.id
-    print(id)
     user = User.objects.get(id=id)
     return render(request, 'user.html', {
         'user': user,
