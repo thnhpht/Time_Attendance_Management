@@ -8,6 +8,7 @@ import face_recognition
 import numpy as np
 from .models import Check_In
 from .models import Check_Out
+from datetime import timedelta
 
 User = get_user_model()
 
@@ -62,6 +63,7 @@ def sign_up(request):
                 user = User.objects.create_user(email=email, name=name, tel=tel, image=image, password=password1)
                 user.save()
                 messages.success(request, 'Tạo tài khoản thành công')
+                return redirect('/sign-in/')
             else:
                 messages.warning(request, 'Mật khẩu và mật khẩu xác nhận khác nhau')
     return render(request, 'sign-up.html')
@@ -75,7 +77,7 @@ def sign_out(request):
 
 def user(request):
     user = User.objects.get(id=request.user.id)
-    return render(request, 'user.html', {
+    return render(request, 'staff-all.html', {
         'user': user,
     })
 
@@ -97,10 +99,12 @@ def check_in(request):
     def save_timekeeping():
         timekeeping = Check_In(user_id=request.user.id, user_name=request.user.name)
         timekeeping.save()
+        checked = True
 
     image = cv2.imread(f'./media/{request.user.image}')
     encode_list_known = find_encodings(image)
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
+    checked = False
 
     while True:
         ret, frame = cap.read()
@@ -126,27 +130,25 @@ def check_in(request):
 
         cv2.imshow('Webcam', frame)
 
-        turn_off = False
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            turn_off = True
+        if checked:
             break
+        return render(request, 'check-in.html')
 
     cap.release()
     cv2.destroyAllWindows()
-
-    if turn_off:
-        return redirect('/home/')
-    return redirect('/check-in/')
+    return redirect('/home/')
 
 
 def check_out(request):
     def save_timekeeping():
         timekeeping = Check_Out(user_id=request.user.id, user_name=request.user.name)
         timekeeping.save()
+        checked = True
 
     image = cv2.imread(f'./media/{request.user.image}')
     encode_list_known = find_encodings(image)
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
+    checked = False
 
     while True:
         ret, frame = cap.read()
@@ -182,4 +184,30 @@ def check_out(request):
 
     if turn_off:
         return redirect('/home/')
-    return redirect('/check-out/')
+    return render(request, 'check-out.html')
+
+
+def timesheets(request):
+    check_in = Check_In.objects.all()
+    check_out = Check_Out.objects.all()
+    list_time_stamp = {}
+
+    for ci in check_in:
+        try:
+            co = Check_Out.objects.get(date=ci.date)
+            time_co = co.time.strftime("%H:%M:%S")
+            t1 = timedelta(hours=ci.time.hour, minutes=ci.time.minute, seconds=ci.time.second)
+            t2 = timedelta(hours=co.time.hour, minutes=co.time.minute, seconds=co.time.second)
+            work_time = t2 - t1
+        except:
+            time_co = ""
+            work_time = ""
+
+        list_time_stamp.update({ci.date.strftime("%d/%m/%Y"): [ci.user_id, ci.user_name,
+                                                               ci.time.strftime("%H:%M:%S"), time_co, work_time]})
+
+    return render(request, 'timesheets.html', {
+        'check_in': check_in,
+        'check_out': check_out,
+        'list_time_stamp': list_time_stamp,
+    })

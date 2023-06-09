@@ -2,7 +2,6 @@
 <html lang="en">
 {% include "header.html" %}
 <body>
-
 {# Wrapper #}
 <div class="wrapper d-flex p-2">
 
@@ -10,6 +9,7 @@
 
     {# Main #}
     <div class="main">
+        {# Show Message #}
         {% if messages %}
             {% for message in messages %}
                 <div class="messages alert alert-{{ message.tags }} d-flex align-items-center alert-dismissible fade show"
@@ -29,6 +29,7 @@
                 </div>
             {% endfor %}
         {% endif %}
+
         <h1 class="mt-5 text-center fw-bold">{% block main-heading %}{% endblock %}</h1>
         {% block main %}{% endblock %}
     </div>

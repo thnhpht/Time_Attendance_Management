@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block main-heading %}
-    Thông tin nhân viên
+    Nhân viên
 {% endblock %}
 
 {% block sidebar %}
@@ -19,12 +19,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>ITG-{{ user.id }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.tel }}</td>
-        </tr>
+        {% for user in users %}
+            <tr>
+                <td>ITG-{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.tel }}</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 {% endblock %}
