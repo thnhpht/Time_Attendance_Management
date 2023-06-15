@@ -1,0 +1,13 @@
+.main .form-statistic{
+    margin: 16px 0 -20px 2.5%;
+}
+
+.main .input-group{
+    width: 250px;
+    height: 36px;
+
+}
+
+.main .input-group .input-group-text, .main .input-group .form-select{
+    font-size: 1.6rem;
+}

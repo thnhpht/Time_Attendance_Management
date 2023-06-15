@@ -12,4 +12,5 @@ urlpatterns = [
     path('check-in/', views.check_in, name='check-in'),
     path('check-out/', views.check_out, name='check-out'),
     path('timesheets/', views.timesheets, name='timesheets'),
+    path('statistic/', views.statistic, name='statistic'),
 ]

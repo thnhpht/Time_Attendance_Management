@@ -9,7 +9,10 @@ import numpy as np
 from .models import Check_In
 from .models import Check_Out
 from datetime import timedelta, datetime
+import datetime as dt
 import time
+import calendar
+from dateutil.relativedelta import relativedelta
 
 User = get_user_model()
 
@@ -99,7 +102,6 @@ def check_in(request):
             timekeeping = Check_In(user_id=request.user.id)
             timekeeping.save()
             messages.success(request, 'Chấm công vào thành công')
-
 
     image = cv2.imread(f'./media/{request.user.image}')
     encode_list_known = find_encodings(image)
@@ -270,4 +272,46 @@ def timesheets(request):
         'check_in': check_in,
         'check_out': check_out,
         'list_time_stamp': list_time_stamp,
+    })
+
+def get_date(date_from, date_to):
+    arr_datetime = []
+    current = date_from
+    arr_datetime.append(current)
+
+    while current < date_to:
+        current += timedelta(days=1)
+        if current.strftime("%A") != "Sunday":
+            arr_datetime.append(current)
+    return arr_datetime
+
+
+def statistic(request):
+    current = datetime.now()
+
+    if request.method == "POST":
+        month = int(request.POST.get('month'))
+        current = datetime(current.year, int(month), 1)
+        date_from = dt.date(2023, month, 1)
+        date_to = date_from + relativedelta(months=+1) - timedelta(days=1)
+    else:
+        month = current.month
+        date_from = dt.date(2023, month, 1)
+        date_to = dt.date.today()
+
+    date = get_date(date_from, date_to)
+    count_worktime = 0
+    days_in_month = int(calendar.monthrange(current.year, month)[1])
+    all_worktime_user = Check_In.objects.filter(user_id=request.user.id)
+
+    for day in all_worktime_user:
+        if day.date.month == month:
+            count_worktime += 1
+
+    count_absent = len(date) - count_worktime
+
+    return render(request, 'statistic.html', {
+        'month': month,
+        'count_worktime': count_worktime,
+        'count_absent': count_absent,
     })
