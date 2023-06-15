@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block main %}
-    <form action="" method="POST">
+    <form action="" method="POST" class="form-sign-in-up">
         {% csrf_token %}
 
         <p>Bạn chưa có tài khoản? <a class="fw-bold" href="{% url 'sign-up' %}">Tạo tài khoản</a></p>

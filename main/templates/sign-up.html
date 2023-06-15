@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block main %}
-    <form id="mainForm" action="" method="POST" enctype="multipart/form-data">
+    <form id="mainForm" action="" method="POST" class="form-sign-in-up" enctype="multipart/form-data">
         {% csrf_token %}
         <p>Bạn đã có tài khoản? <a class="fw-bold" href="{% url 'sign-in' %}">Đăng nhập</a></p>
 

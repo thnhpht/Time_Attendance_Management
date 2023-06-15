@@ -8,7 +8,8 @@ import face_recognition
 import numpy as np
 from .models import Check_In
 from .models import Check_Out
-from datetime import timedelta
+from datetime import timedelta, datetime
+import time
 
 User = get_user_model()
 
@@ -75,13 +76,6 @@ def sign_out(request):
     return redirect('/sign-in/')
 
 
-def user(request):
-    user = User.objects.get(id=request.user.id)
-    return render(request, 'staff-all.html', {
-        'user': user,
-    })
-
-
 def staff(request):
     users = User.objects.all()
     return render(request, 'staff.html', {
@@ -97,13 +91,26 @@ def find_encodings(image):
 
 def check_in(request):
     def save_timekeeping():
-        timekeeping = Check_In(user_id=request.user.id, user_name=request.user.name)
-        timekeeping.save()
-        checked = True
+        current = datetime.now()
+        try:
+            Check_In.objects.get(date=current.date())
+            messages.warning(request, 'Không thể chấm công do nhân viên đã chấm công vào')
+        except:
+            timekeeping = Check_In(user_id=request.user.id)
+            timekeeping.save()
+            messages.success(request, 'Chấm công vào thành công')
+
 
     image = cv2.imread(f'./media/{request.user.image}')
     encode_list_known = find_encodings(image)
-    cap = cv2.VideoCapture(0)
+
+    for i in range(5):
+        try:
+            cap = cv2.VideoCapture(i)
+            break
+        except:
+            continue
+
     checked = False
 
     while True:
@@ -119,35 +126,54 @@ def check_in(request):
             face_dis = face_recognition.face_distance(encode_list_known, encodeFace)
             match_index = np.argmin(face_dis)
 
-            if matches[match_index]:
+            if face_dis[match_index] < 0.45:
                 y1, x2, y2, x1 = faceLoc
                 y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.rectangle(frame, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
-                cv2.putText(frame, "Chấm công vào thành công", (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1,
+                cv2.putText(frame, "Cham cong vao thanh cong", (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1,
                             (255, 255, 255), 2)
                 save_timekeeping()
+                checked = True
 
-        cv2.imshow('Webcam', frame)
+        window_name = "Webcam"
+        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+        cv2.setWindowProperty(window_name, cv2.WND_PROP_TOPMOST, 1)
+        cv2.imshow(window_name, frame)
+        cv2.waitKey(1)
 
         if checked:
+            time.sleep(2)
+            cv2.destroyAllWindows()
+            cap.release()
             break
-        return render(request, 'check-in.html')
 
-    cap.release()
-    cv2.destroyAllWindows()
-    return redirect('/home/')
+    if checked:
+        return redirect('/home/')
+    return render(request, 'check-in.html')
 
 
 def check_out(request):
     def save_timekeeping():
-        timekeeping = Check_Out(user_id=request.user.id, user_name=request.user.name)
-        timekeeping.save()
-        checked = True
+        current = datetime.now()
+        try:
+            Check_Out.objects.get(date=current.date())
+            messages.warning(request, 'Không thể chấm công do nhân viên đã chấm công ra')
+        except:
+            timekeeping = Check_Out(user_id=request.user.id)
+            timekeeping.save()
+            messages.success(request, 'Chấm công ra thành công')
 
     image = cv2.imread(f'./media/{request.user.image}')
     encode_list_known = find_encodings(image)
-    cap = cv2.VideoCapture(0)
+
+    for i in range(5):
+        try:
+            cap = cv2.VideoCapture(i)
+            break
+        except:
+            continue
+
     checked = False
 
     while True:
@@ -163,48 +189,82 @@ def check_out(request):
             face_dis = face_recognition.face_distance(encode_list_known, encodeFace)
             match_index = np.argmin(face_dis)
 
-            if matches[match_index]:
+            if face_dis[match_index] < 0.45:
                 y1, x2, y2, x1 = faceLoc
                 y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.rectangle(frame, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
-                cv2.putText(frame, "Chấm công ra thành công", (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1,
+                cv2.putText(frame, "Cham cong ra thanh cong", (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1,
                             (255, 255, 255), 2)
                 save_timekeeping()
+                checked = True
 
-        cv2.imshow('Webcam', frame)
+        window_name = "Webcam"
+        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+        cv2.setWindowProperty(window_name, cv2.WND_PROP_TOPMOST, 1)
+        cv2.imshow(window_name, frame)
+        cv2.waitKey(1)
 
-        turn_off = False
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            turn_off = True
+        if checked:
+            time.sleep(2)
+            cv2.destroyAllWindows()
+            cap.release()
             break
 
-    cap.release()
-    cv2.destroyAllWindows()
-
-    if turn_off:
+    if checked:
         return redirect('/home/')
     return render(request, 'check-out.html')
 
 
 def timesheets(request):
-    check_in = Check_In.objects.all()
-    check_out = Check_Out.objects.all()
+    days_in_week = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"]
     list_time_stamp = {}
 
-    for ci in check_in:
+    if request.session.get('now'):
+        day, month, year = request.session.get('now').split("/")
+        now = datetime(int(year), int(month), int(day))
+    else:
+        now = datetime.now()
+
+    if request.method == "POST":
+        if 'current-week' in request.POST:
+            now = datetime.now()
+        elif 'previous-week' in request.POST:
+            now = now - timedelta(days=now.weekday() + 1)
+        elif 'next-week' in request.POST:
+            now = now - timedelta(days=now.weekday() - 8)
+        else:
+            date = request.POST.get('date')
+            month, day, year = date.split("/")
+            now = datetime(int(year), int(month), int(day))
+
+        request.session['now'] = str(now.day) + "/" + str(now.month) + "/" + str(now.year)
+
+    for i in range(7):
+        current = now - timedelta(days=now.weekday() - i)
+        day = current.date().strftime("%d/%m/%Y")
+
         try:
-            co = Check_Out.objects.get(date=ci.date)
-            time_co = co.time.strftime("%H:%M:%S")
-            t1 = timedelta(hours=ci.time.hour, minutes=ci.time.minute, seconds=ci.time.second)
-            t2 = timedelta(hours=co.time.hour, minutes=co.time.minute, seconds=co.time.second)
-            work_time = t2 - t1
+            ci = Check_In.objects.get(user_id=request.user.id, date=current.date())
+            time_ci = ci.time.strftime("%H:%M:%S")
         except:
+            ci = ""
+            time_ci = ""
+
+        try:
+            co = Check_Out.objects.get(user_id=request.user.id, date=current.date())
+            time_co = co.time.strftime("%H:%M:%S")
+        except:
+            co = ""
             time_co = ""
+
+        try:
+            work_time = timedelta(hours=co.time.hour, minutes=co.time.minute, seconds=co.time.second) - timedelta(
+                hours=ci.time.hour, minutes=ci.time.minute, seconds=ci.time.second)
+        except:
             work_time = ""
 
-        list_time_stamp.update({ci.date.strftime("%d/%m/%Y"): [ci.user_id, ci.user_name,
-                                                               ci.time.strftime("%H:%M:%S"), time_co, work_time]})
+        list_time_stamp.update({days_in_week[i]: [day, time_ci, time_co, work_time]})
 
     return render(request, 'timesheets.html', {
         'check_in': check_in,

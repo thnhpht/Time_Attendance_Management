@@ -56,19 +56,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Check_In(models.Model):
     user_id = models.CharField(max_length=10)
-    user_name = models.CharField(max_length=255)
     date = models.DateField(default=datetime.now)
     time = models.TimeField(default=datetime.now)
 
     def __str__(self):
-        return self.user_id + " " + self.user_name + " " + str(self.date) + " " + str(self.time)
-
+        return "ID: " + self.user_id + " - Date: " + str(self.date) + " - Time: " + str(self.time)
 
 class Check_Out(models.Model):
     user_id = models.CharField(max_length=10)
-    user_name = models.CharField(max_length=255)
     date = models.DateField(default=datetime.now)
     time = models.TimeField(default=datetime.now)
 
     def __str__(self):
-        return self.user_id + " " + self.user_name + " " + str(self.date) + " " + str(self.time)
+        return "ID: " + self.user_id + " - Date: " + str(self.date) + " - Time: " + str(self.time)
