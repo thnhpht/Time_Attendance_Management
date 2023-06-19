@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block main-heading %}
+    Quản lý bảng chấm công
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar.html' %}
+{% endblock %}
+
+{% block main %}
+    <form action="" method="POST" class="form-date-picker">
+        {% csrf_token %}
+
+        <button type="submit" class="btn button-date icon" name="previous-week">
+            <svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    fill="currentColor"
+                    class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                      d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+        </button>
+
+        <button type="submit" class="btn button-date icon" name="next-week">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                 fill="currentColor"
+                 class="bi bi-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                      d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+            </svg>
+        </button>
+
+        <button type="submit" class="btn button-date" name="current-week"><strong>Tuần này</strong></button>
+
+
+        <div class="input-group date d-inline" id="datepicker">
+            <input type="hidden" class="form-control" id="date" name="date"
+                   onchange="javascript:this.form.submit();"/>
+            <span class="input-group-append">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                     class="bi bi-calendar-fill" viewBox="0 0 16 16">
+                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5h16V4H0V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+            </span>
+        </div>
+    </form>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Ngày</th>
+            <th scope="col">Giờ vào ca</th>
+            <th scope="col">Giờ ra ca</th>
+            <th scope="col">Tổng giờ làm việc</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for date, values in list_time_stamp.items %}
+            <tr>
+                <td>{{ date }}</td>
+                {% for value in values %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}

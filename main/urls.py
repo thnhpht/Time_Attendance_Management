@@ -13,4 +13,7 @@ urlpatterns = [
     path('check-out/', views.check_out, name='check-out'),
     path('timesheets/', views.timesheets, name='timesheets'),
     path('statistic/', views.statistic, name='statistic'),
+    path('admin-staff/', views.admin_staff, name='admin-staff'),
+    path('admin-timesheets/', views.admin_timesheets, name='admin-timesheets'),
+    path('admin-statistic/', views.admin_statistic, name='admin-statistic'),
 ]

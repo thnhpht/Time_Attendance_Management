@@ -80,11 +80,17 @@ def sign_out(request):
 
 
 def staff(request):
-    users = User.objects.all()
-    return render(request, 'staff.html', {
+    return render(request, 'staff.html')
+
+def admin_staff(request):
+    if request.method == "POST":
+        search = request.POST.get('search')
+        users = User.objects.filter(name__contains=search)
+    else:
+        users = User.objects.all()
+    return render(request, 'admin-staff.html', {
         'users': users,
     })
-
 
 def find_encodings(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -93,15 +99,19 @@ def find_encodings(image):
 
 
 def check_in(request):
+    current = datetime.now()
     def save_timekeeping():
-        current = datetime.now()
-        try:
-            Check_In.objects.get(date=current.date())
-            messages.warning(request, 'Không thể chấm công do nhân viên đã chấm công vào')
-        except:
-            timekeeping = Check_In(user_id=request.user.id)
-            timekeeping.save()
-            messages.success(request, 'Chấm công vào thành công')
+        timekeeping = Check_In(user_id=request.user.id)
+        timekeeping.save()
+        messages.success(request, 'Chấm công vào thành công')
+
+    # Kiểm tra User đã chấm công vào chưa
+    try:
+        Check_In.objects.get(date=current.date())
+        messages.warning(request, 'Nhân viên đã chấm công vào')
+        return redirect('/home/')
+    except:
+        pass
 
     image = cv2.imread(f'./media/{request.user.image}')
     encode_list_known = find_encodings(image)
@@ -144,27 +154,40 @@ def check_in(request):
         cv2.imshow(window_name, frame)
         cv2.waitKey(1)
 
-        if checked:
+        turn_off = False
+        if checked or cv2.getWindowProperty('Webcam', cv2.WND_PROP_VISIBLE) < 1:
+            turn_off = True
             time.sleep(2)
             cv2.destroyAllWindows()
             cap.release()
             break
 
-    if checked:
+    if turn_off:
         return redirect('/home/')
     return render(request, 'check-in.html')
 
 
 def check_out(request):
+    current = datetime.now()
     def save_timekeeping():
-        current = datetime.now()
-        try:
-            Check_Out.objects.get(date=current.date())
-            messages.warning(request, 'Không thể chấm công do nhân viên đã chấm công ra')
-        except:
-            timekeeping = Check_Out(user_id=request.user.id)
-            timekeeping.save()
-            messages.success(request, 'Chấm công ra thành công')
+        timekeeping = Check_Out(user_id=request.user.id)
+        timekeeping.save()
+        messages.success(request, 'Chấm công ra thành công')
+
+    # Kiểm tra User đã chấm công vào chưa
+    try:
+        Check_In.objects.get(date=current.date())
+    except:
+        messages.warning(request, 'Nhân viên chưa chấm công vào')
+        return redirect('/home/')
+
+    # Kiểm tra User đã chấm công ra chưa
+    try:
+        Check_Out.objects.get(date=current.date())
+        messages.warning(request, 'Nhân viên đã chấm công ra')
+        return redirect('/home/')
+    except:
+        pass
 
     image = cv2.imread(f'./media/{request.user.image}')
     encode_list_known = find_encodings(image)
@@ -207,13 +230,15 @@ def check_out(request):
         cv2.imshow(window_name, frame)
         cv2.waitKey(1)
 
-        if checked:
+        turn_off = False
+        if checked or cv2.getWindowProperty('Webcam',cv2.WND_PROP_VISIBLE) < 1:
+            turn_off = True
             time.sleep(2)
             cv2.destroyAllWindows()
             cap.release()
             break
 
-    if checked:
+    if turn_off:
         return redirect('/home/')
     return render(request, 'check-out.html')
 
@@ -274,6 +299,62 @@ def timesheets(request):
         'list_time_stamp': list_time_stamp,
     })
 
+def admin_timesheets(request):
+    days_in_week = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"]
+    list_time_stamp = {}
+
+    if request.session.get('now'):
+        day, month, year = request.session.get('now').split("/")
+        now = datetime(int(year), int(month), int(day))
+    else:
+        now = datetime.now()
+
+    if request.method == "POST":
+        if 'current-week' in request.POST:
+            now = datetime.now()
+        elif 'previous-week' in request.POST:
+            now = now - timedelta(days=now.weekday() + 1)
+        elif 'next-week' in request.POST:
+            now = now - timedelta(days=now.weekday() - 8)
+        else:
+            date = request.POST.get('date')
+            month, day, year = date.split("/")
+            now = datetime(int(year), int(month), int(day))
+
+        request.session['now'] = str(now.day) + "/" + str(now.month) + "/" + str(now.year)
+
+    for i in range(7):
+        current = now - timedelta(days=now.weekday() - i)
+        day = current.date().strftime("%d/%m/%Y")
+
+        try:
+            ci = Check_In.objects.get(user_id=request.user.id, date=current.date())
+            time_ci = ci.time.strftime("%H:%M:%S")
+        except:
+            ci = ""
+            time_ci = ""
+
+        try:
+            co = Check_Out.objects.get(user_id=request.user.id, date=current.date())
+            time_co = co.time.strftime("%H:%M:%S")
+        except:
+            co = ""
+            time_co = ""
+
+        try:
+            work_time = timedelta(hours=co.time.hour, minutes=co.time.minute, seconds=co.time.second) - timedelta(
+                hours=ci.time.hour, minutes=ci.time.minute, seconds=ci.time.second)
+        except:
+            work_time = ""
+
+        list_time_stamp.update({days_in_week[i]: [day, time_ci, time_co, work_time]})
+
+    return render(request, 'admin-timesheets.html', {
+        'check_in': check_in,
+        'check_out': check_out,
+        'list_time_stamp': list_time_stamp,
+    })
+
 def get_date(date_from, date_to):
     arr_datetime = []
     current = date_from
@@ -311,6 +392,36 @@ def statistic(request):
     count_absent = len(date) - count_worktime
 
     return render(request, 'statistic.html', {
+        'month': month,
+        'count_worktime': count_worktime,
+        'count_absent': count_absent,
+    })
+
+def admin_statistic(request):
+    current = datetime.now()
+
+    if request.method == "POST":
+        month = int(request.POST.get('month'))
+        current = datetime(current.year, int(month), 1)
+        date_from = dt.date(2023, month, 1)
+        date_to = date_from + relativedelta(months=+1) - timedelta(days=1)
+    else:
+        month = current.month
+        date_from = dt.date(2023, month, 1)
+        date_to = dt.date.today()
+
+    date = get_date(date_from, date_to)
+    count_worktime = 0
+    days_in_month = int(calendar.monthrange(current.year, month)[1])
+    all_worktime_user = Check_In.objects.filter(user_id=request.user.id)
+
+    for day in all_worktime_user:
+        if day.date.month == month:
+            count_worktime += 1
+
+    count_absent = len(date) - count_worktime
+
+    return render(request, 'admin-statistic.html', {
         'month': month,
         'count_worktime': count_worktime,
         'count_absent': count_absent,
