@@ -1,0 +1,62 @@
+.main .add-config {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    padding: 8px;
+    margin-left: 2.5%;
+    background: #4da16a;
+    border-radius: 4px;
+}
+
+.main .add-config span {
+    margin-left: 8px;
+    font-size: 1.6rem;
+    color: #fff;
+}
+
+.main .add-config:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.main .form-add-config {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    background: #ffffff;
+    width: 520px;
+    padding: 40px 62px;
+    border-radius: 20px;
+    box-shadow: 0 0 1px rgba(39, 103, 73, 0.3), 0 16px 24px rgba(39, 103, 73, 0.201) !important;
+}
+
+.main .form-add-config .buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.main .form-add-config .cancel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #EBECF0;
+    margin-right: 8px;
+    color: #000;
+}
+
+.main .form-add-config .submit, .main .form-add-config .cancel {
+    width: 120px;
+    height: 40px;
+    font-size: 1.4rem;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12);
+}
+
+.main .form-add-config .cancel:hover {
+    background: #DCDEE4;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+

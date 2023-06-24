@@ -1,17 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'partials/base.html' %}
 
 {% block main-heading %}
     Tạo tài khoản
 {% endblock %}
 
 {% block sidebar %}
-    {% include 'sidebar.html' %}
+    {% include 'partials/sidebar.html' %}
 {% endblock %}
 
 {% block main %}
     <form id="mainForm" action="" method="POST" class="form-sign-in-up" enctype="multipart/form-data">
         {% csrf_token %}
-        <p>Bạn đã có tài khoản? <a class="fw-bold" href="{% url 'sign-in' %}">Đăng nhập</a></p>
+        <p>Bạn đã có tài khoản? <a class="fw-bold" href="{% url 'sign_in' %}">Đăng nhập</a></p>
 
         <div class="mb-5">
             <label for="name" class="form-label fw-bold label">Họ và tên</label>

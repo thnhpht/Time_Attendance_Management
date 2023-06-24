@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'partials/base.html' %}
 
 {% block main-heading %}
     Quản lý nhân viên
 {% endblock %}
 
 {% block sidebar %}
-    {% include 'sidebar.html' %}
+    {% include 'partials/sidebar.html' %}
 {% endblock %}
 
 {% block main %}
@@ -20,10 +20,9 @@
                 </svg>
             </button>
         </div>
-
     </form>
 
-    <table class="table table-hover mt-5">
+    <table class="table table-hover mt-4">
         <thead>
         <tr>
             <th scope="col">Tên nhân viên</th>

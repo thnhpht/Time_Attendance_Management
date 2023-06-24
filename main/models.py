@@ -69,3 +69,12 @@ class Check_Out(models.Model):
 
     def __str__(self):
         return "ID: " + self.user_id + " - Date: " + str(self.date) + " - Time: " + str(self.time)
+
+class Config(models.Model):
+    location_add = models.CharField(max_length=255)
+    lat = models.CharField(max_length=50)
+    lon = models.CharField(max_length=50)
+    wifi = models.CharField(max_length=50)
+
+    def __str__(self):
+        return "Address: " + str(self.location_add) + " - Wifi: " + str(self.wifi)
