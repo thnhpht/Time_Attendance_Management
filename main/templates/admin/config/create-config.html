@@ -54,6 +54,7 @@
 
     <form action="" method="POST" class="form-add-config" id="form-add-config">
         {% csrf_token %}
+        {{ form_ }}
         {{ form }}
         <div class="buttons">
             <a href="{% url 'config' %}" class="cancel">Hủy Bỏ</a>

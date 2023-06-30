@@ -7,11 +7,3 @@
 {% block sidebar %}
     {% include 'partials/sidebar.html' %}
 {% endblock %}
-
-{% block main %}
-    <form action="" method="POST" id="form-get-loc" class="form-get-loc"">
-        {% csrf_token %}
-        <input type="hidden" id="loc" name="loc" class="form-control"></input>
-        <input type="submit" id="btn-submit" style="display: none;"></input>
-    </form>
-{% endblock %}

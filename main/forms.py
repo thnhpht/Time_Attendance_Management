@@ -14,7 +14,6 @@ class ConfigForm(ModelForm):
             'wifi': forms.TextInput(attrs={'class': 'form-control input mb-5'})
         }
 
-
         labels = {
             "location_add": _("Địa điểm chấm công bằng GPS"),
             "wifi": _("Tên wifi"),

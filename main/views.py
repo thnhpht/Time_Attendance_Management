@@ -17,12 +17,14 @@ from geopy.distance import distance
 import subprocess
 from .forms import ConfigForm
 import winsdk.windows.devices.geolocation as wdg, asyncio
+from django.template.loader import get_template
+
 
 User = get_user_model()
 geolocator = Nominatim(user_agent="thnhpht")
 
 
-@login_required(login_url='sign-in')
+@login_required(login_url='sign_in')
 def home(request):
     if not request.user.is_authenticated:
         return redirect('/sign-in/')
@@ -35,7 +37,7 @@ def adminHome(request):
     return render(request, './admin/home.html')
 
 
-def authenticate_user(email=None, password=None):
+def authenticateUser(email=None, password=None):
     try:
         user = User.objects.get(email=email)
 
@@ -51,7 +53,7 @@ def signIn(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user = authenticate_user(email, password)
+        user = authenticateUser(email, password)
         if user is not None:
             login(request, user)
             messages.success(request, 'Đăng nhập thành công')
@@ -174,10 +176,14 @@ def checkIn(request):
 
     for i in range(5):
         try:
-            cap = cv2.VideoCapture(i)
+            cap = cv2.VideoCapture(0)
             break
         except:
             continue
+
+    if not (cap.isOpened()):
+        messages.warning(request, 'Không thể mở camera trên thiết bị')
+        return redirect('/home/')
 
     checked = False
 
@@ -257,6 +263,10 @@ def checkOut(request):
             break
         except:
             continue
+
+    if not (cap.isOpened()):
+        messages.warning(request, 'Không thể mở camera trên thiết bị')
+        return redirect('/home/')
 
     checked = False
 
