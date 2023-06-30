@@ -412,8 +412,13 @@ def statistic(request):
 
 def config(request):
     configs = Config.objects.all()
+    add_button = False
+    if len(configs) == 0:
+        add_button = True
+
     return render(request, './admin/config/config.html', {
         'configs': configs,
+        'add_button' : add_button,
     })
 
 
